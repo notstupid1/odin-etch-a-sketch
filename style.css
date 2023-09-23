@@ -1,0 +1,16 @@
+* {
+    margin: 0;
+    box-sizing: border-box;
+}
+.sketch-page-holder{
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+.sketch-page {
+    box-shadow: 4px 4px 10px;
+    box-shadow: black;
+    display: flex;
+    flex-wrap: wrap;
+}
