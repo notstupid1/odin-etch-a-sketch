@@ -10,10 +10,14 @@ function createSketchPad(size){
         sketchPadPixel[i] = document.createElement('div');   
         sketchPadPixel[i].style.height = `${pixelSize}px`;
         sketchPadPixel[i].style.width = `${pixelSize}px`;
-        sketchPadPixel[i].style.backgroundColor = 'grey';
-        sketchPadPixel[i].addEventListener("mousedown", () => {sketchPadPixel[i].style.backgroundColor = 'black'});
+        sketchPadPixel[i].style.backgroundColor = '#d6d6d6';
+        sketchPadPixel[i].addEventListener('click', draw(sketchPadPixel[i]));
         sketchPad.appendChild(sketchPadPixel[i]);     
     }
+}
+
+function draw(pixel) {
+    pixel.onmouseover = () => {pixel.style.backgroundColor = 'black'};
 }
 
 createSketchPad(16);

@@ -3,7 +3,6 @@
     box-sizing: border-box;
 }
 .sketch-page-holder{
-    padding: 12px;
     display: flex;
     justify-content: center;
     align-content: center;
@@ -13,4 +12,39 @@
     box-shadow: black;
     display: flex;
     flex-wrap: wrap;
+}
+.menu-item-block {
+    box-shadow: 4px 8px 10px;
+    box-shadow: black;
+    width: 500px;
+    display: flex;
+    gap: 20px;
+    margin: 0px auto;
+    margin-top: 100px;
+    padding: 12px 12px;
+    background-color: hsl(240, 25%, 40%);
+}
+.menu-item-block #title {
+    color: #d6d6d6;
+    margin-right: auto;
+    font-size: 28px;
+}
+.menu-item-block #reset {
+    border: none;
+    border-radius: 8px;
+    height: 24px;
+    align-self: flex-end;
+}
+.menu-item-block #new-sketch {
+    border: none;
+    background-color: greenyellow;
+    border-radius: 8px;
+    height: 24px;
+    align-self: flex-end;
+}
+.menu-item-block #reset:hover {
+    background-color: #acacac;
+}
+.menu-item-block #new-sketch:hover {
+    background-color: hsl(84, 68%, 40%);
 }
