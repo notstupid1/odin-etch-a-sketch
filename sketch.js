@@ -2,15 +2,18 @@ const sketchPad = document.querySelector('.sketch-page');
 const resetBtn = document.querySelector('#reset');
 const newSketchBtn = document.querySelector('#new-sketch');
 const randomizeBtn = document.querySelector('#randomize');
+const effectBtn = document.querySelector('#effect');
 
-let isRandomized = false;
+let isRandomizeEnabled = false;
+let isEffectEnabled = false;
+let gradDark = 0;
 
 let defaultSize = 16;
 let defaultColor = '#eaeaea';
 
 let sketchPadPixel = [];
 
-let maxWidth = sketchPad.style.maxWidth = '500px';
+let maxWidth = sketchPad.style.maxWidth = '600px';
 
 function createSketchPad(size){
     let pixelSize = parseInt(maxWidth) / size;
@@ -39,9 +42,20 @@ function render(pixel, color = defaultColor) {
 
 function draw() {
     for (let pixel of sketchPadPixel) {
-        pixel.addEventListener('mouseover', 
-        () => (!isRandomized) ? render(pixel, 'black') : render(pixel, randomize()));
+        pixel.addEventListener('mouseover', () => decideColor(pixel));
     }
+}
+
+function decideColor(pixel) {
+    let color;
+    if(!isRandomizeEnabled) color = 'rgb(0, 0, 0)'; 
+    else color = randomize();
+    if(isEffectEnabled) {
+        if(isRandomizeEnabled) color = effect(pixel, color);
+        else color = effect(pixel);
+    }
+
+    render(pixel, color);
 }
 
 function reset() {
@@ -72,17 +86,69 @@ function randomize() {
     return color;
 }
 
+function effect(pixel, color = defaultColor) {
+    let r, g, b, darkness;
+    if (pixel.style.backgroundColor.slice(0, 3) === 'rgb') {
+        let parsedColor = pixel.style.backgroundColor.split('(')[1].split(')')[0].split(',');
+        r = parseInt(parsedColor[0]);
+        g = parseInt(parsedColor[1]);
+        b = parseInt(parsedColor[2]);
+    }
+    if (color !== defaultColor) {
+        gradDark += 0.5;
+        darkness = (r + g + b) / 3;
+
+        let parsedColor = color.split('(')[1].split(')')[0].split(',');
+        r = parseInt(parsedColor[0]);
+        g = parseInt(parsedColor[1]);
+        b = parseInt(parsedColor[2]);
+        
+        if (darkness - (darkness / 10) * gradDark > 0) {
+            r = r - (r / 10) * gradDark;
+            g = g - (g / 10) * gradDark;
+            b = b - (b / 10) * gradDark;
+        } else {
+            gradDark = 0;
+            r = g = b = 0;
+        }
+        return `rgb(${r}, ${g}, ${b})`;
+    } else {
+        darkness = (r + g + b) / 3;
+        if (darkness - (255 / 10) > 0) {
+            r = r - (255 / 10);
+            g = g - (255 / 10);
+            b = b - (255 / 10);
+        } else {
+            r = g = b = 0;
+        }
+        return `rgb(${r}, ${g}, ${b})`;
+    }
+    return color;
+}
+
 randomizeBtn.addEventListener('click', 
             () => {
-                    if (isRandomized) {
-                        isRandomized = false;
+                    if (isRandomizeEnabled) {
+                        isRandomizeEnabled = false;
                         randomizeBtn.textContent = "Randomize" 
                     } 
                     else {
-                        isRandomized = true;
+                        isRandomizeEnabled = true;
                         randomizeBtn.textContent = "Un-Randomize"
                     }
                   });
+
+effectBtn.addEventListener('click', 
+                  () => {
+                          if (isEffectEnabled) {
+                              isEffectEnabled = false;
+                              effectBtn.textContent = "Add Effect" 
+                          } 
+                          else {
+                              isEffectEnabled = true;
+                              effectBtn.textContent = "Remove Effect"
+                          }
+                        });
 
 newSketchBtn.addEventListener('click', newSketch);
 resetBtn.addEventListener('click', reset);
