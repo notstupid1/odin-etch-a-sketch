@@ -1,23 +1,67 @@
 const sketchPad = document.querySelector('.sketch-page');
+const resetBtn = document.querySelector('#reset');
+const newSketchBtn = document.querySelector('#new-sketch');
+
+let defaultSize = 16;
 
 let sketchPadPixel = [];
 
+let maxWidth = sketchPad.style.maxWidth = '500px';
+
 function createSketchPad(size){
-    let maxWidth = sketchPad.style.maxWidth = '500px';
     let pixelSize = parseInt(maxWidth) / size;
 
-    for(let i = 0; i < size ** 2; i++) {
-        sketchPadPixel[i] = document.createElement('div');   
-        sketchPadPixel[i].style.height = `${pixelSize}px`;
-        sketchPadPixel[i].style.width = `${pixelSize}px`;
-        sketchPadPixel[i].style.backgroundColor = '#d6d6d6';
-        sketchPadPixel[i].addEventListener('click', draw(sketchPadPixel[i]));
-        sketchPad.appendChild(sketchPadPixel[i]);     
+    if (sketchPadPixel.length !== 0) {
+        for (let i = 0; i < sketchPadPixel.length; i++) {
+            sketchPad.removeChild(sketchPadPixel[i]);   
+        }
+        sketchPadPixel.length = 0;
+    }
+
+    for(let i = 0; i < size; i++) {
+        for(let j = (i * size); j < size * (i+1); j++) {
+            sketchPadPixel[j] = document.createElement('div');   
+            sketchPadPixel[j].style.height = `${pixelSize}px`;
+            sketchPadPixel[j].style.width = `${pixelSize}px`;
+            render(sketchPadPixel[j], '#d6d6d6');
+            sketchPad.appendChild(sketchPadPixel[j]);  
+        }
+    }
+    console.log(sketchPadPixel.length);
+    console.log(sketchPadPixel);
+}
+
+function render(pixel, color) {
+    pixel.style.backgroundColor = color;
+}
+
+function draw() {
+    for (let pixel of sketchPadPixel) {
+        pixel.addEventListener('mouseover', () => render(pixel, 'black'));
     }
 }
 
-function draw(pixel) {
-    pixel.onmouseover = () => {pixel.style.backgroundColor = 'black'};
+function reset() {
+    for (let pixel of sketchPadPixel) {
+        render(pixel, '#d6d6d6');
+    }
 }
 
-createSketchPad(16);
+function newSketch() {
+    let size = parseInt(prompt("Enter size of grid: "));
+    if (size < 8) {
+        alert("Size too small! Min Size - 8");
+        return;
+    }
+    if (size > 100) {
+        alert("Size too large! Max Size - 100");
+        return;
+    }
+    createSketchPad(size);
+    draw();
+}
+
+newSketchBtn.addEventListener('click', newSketch);
+resetBtn.addEventListener('click', reset);
+createSketchPad(defaultSize);
+draw();
